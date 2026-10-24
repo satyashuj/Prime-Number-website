@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Prime Checker | Satyanshu Saxena</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+    color: #172554;
+}
+
+/* HEADER */
+header {
+    background: #101747;
+    color: white;
+    text-align: center;
+    padding: 22px 15px;
+    border-bottom: 3px solid #00d4ff;
+}
+
+header h1 {
+    font-size: clamp(22px, 4vw, 32px);
+}
+
+header p {
+    margin-top: 8px;
+    color: #67e8f9;
+    letter-spacing: 2px;
+}
+
+/* MAIN LAYOUT */
+main {
+    width: 100%;
+    padding: 35px 20px;
+}
+
+/* CHECKER CARD */
+.container {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 38px);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 24px;
+    box-shadow: 0 15px 45px #24105b55;
+}
+
+h2 {
+    font-size: clamp(24px, 4vw, 32px);
+    background: linear-gradient(90deg, #7c3aed, #2563eb, #ec4899);
+    color: #7c3aed;
+    margin-bottom: 15px;
+}
+
+.container h2 {
+    background: linear-gradient(90deg, #7c3aed, #2563eb, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* INPUT AND BUTTON */
+.input-group {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 15px;
+    border: 2px solid #38bdf8;
+    border-radius: 12px;
+    font-size: 18px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 10px #7c3aed55;
+}
+
+button {
+    padding: 15px 24px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb, #9333ea);
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+    white-space: nowrap;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px #7c3aed55;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* RESULT */
+#result {
+    display: none;
+    margin-top: 25px;
+    padding: 22px 12px;
+    border-radius: 15px;
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: bold;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+#result.prime {
+    display: block;
+    color: #047857;
+    border: 2px solid #10b981;
+    background: linear-gradient(
+        135deg, #d1fae5, #fef9c3, #fce7f3, #dbeafe
+    );
+    animation: glow 1.5s infinite alternate;
+}
+
+#result.not-prime,
+#result.error {
+    display: block;
+    color: #dc2626;
+    border: 2px solid #ef4444;
+    background: #fee2e2;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px #34d399; }
+    to { box-shadow: 0 0 20px #a78bfa; }
+}
+
+.hint {
+    margin-top: 18px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* THEORY SECTION */
+.theory {
+    width: 100%;
+    max-width: 950px;
+    margin: 45px auto 10px;
+}
+
+.theory-title {
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+    -webkit-text-fill-color: white;
+    background: none;
+    line-height: 1.4;
+}
+
+.theory-card {
+    width: 100%;
+    background: white;
+    padding: clamp(18px, 3vw, 28px);
+    margin: 20px 0;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px #24105b25;
+    line-height: 1.8;
+    border-left: 5px solid #6366f1;
+    overflow-wrap: anywhere;
+}
+
+.theory-card h3 {
+    margin-bottom: 12px;
+    color: #4338ca;
+    font-size: clamp(18px, 2.5vw, 22px);
+}
+
+.theory-card p,
+.theory-card li {
+    color: #334155;
+}
+
+.theory-card p {
+    margin: 8px 0;
+}
+
+.theory-card ul,
+.theory-card ol {
+    padding-left: 24px;
+}
+
+.prime-info {
+    border-left-color: #10b981;
+}
+
+.prime-info h3 {
+    color: #059669;
+}
+
+.nonprime-info {
+    border-left-color: #ef4444;
+}
+
+.nonprime-info h3 {
+    color: #dc2626;
+}
+
+
+.theory-card hr {
+    border: 0;
+    border-top: 1px solid #dbeafe;
+    margin: 20px 0;
+}
+
+.theory-card h3 {
+    line-height: 1.5;
+}
+
+.theory-card p,
+.theory-card li {
+    line-height: 1.9;
+}
+
+
+/* FOOTER */
+footer {
+    background: #101747;
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+    border-top: 3px solid #00d4ff;
+    line-height: 1.8;
+}
+
+footer strong {
+    color: #facc15;
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+    main {
+        padding: 28px 18px;
+    }
+
+    .container {
+        max-width: 600px;
+    }
+
+    .theory {
+        margin-top: 35px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+    header {
+        padding: 18px 10px;
+    }
+
+    header p {
+        font-size: 12px;
+        letter-spacing: 1.5px;
+    }
+
+    main {
+        padding: 22px 12px;
+    }
+
+    .container {
+        padding: 24px 16px;
+        border-radius: 18px;
+    }
+
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    input {
+        width: 100%;
+        min-height: 52px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        min-height: 50px;
+    }
+
+    #result {
+        padding: 18px 10px;
+    }
+
+    .theory {
+        margin-top: 30px;
+    }
+
+    .theory-card {
+        margin: 15px 0;
+        border-radius: 12px;
+    }
+
+    footer {
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>✨ SATYANSHU SAXENA</h1>
+    <p>LEARN • CODE • GROW</p>
+</header>
+
+<main>
+
+    <!-- PRIME CHECKER -->
+    <section class="container">
+        <h2>Prime Number Checker</h2>
+
+        <p class="subtitle">
+            Enter a number and press Enter or click Check
+        </p>
+
+        <form id="primeForm">
+            <div class="input-group">
+                <input
+                    type="number"
+                    id="num"
+                    placeholder="Enter a number"
+                    step="1"
+                    inputmode="numeric"
+                    required
+                >
+                <button type="submit">🔍 Check</button>
+            </div>
+        </form>
+
+        <div id="result" role="status" aria-live="polite"></div>
+
+        <p class="hint">
+            💡 A prime number is greater than 1 and has exactly two factors.
+        </p>
+    </section>
+
+    <!-- THEORY -->
+    <section class="theory">
+        <h2 class="theory-title">📘 Prime & Non-Prime Numbers</h2>
+
+       
+<div class="theory-card prime-info">
+    <h3>🟢 1. What is a Prime Number?</h3>
+    <p>
+        A Prime Number is a natural number greater than 1
+        that has exactly two factors: 1 and itself.
+    </p>
+    <p><strong>Examples:</strong> 2, 3, 5, 7, 11, 13, 17, 19</p>
+    <p><strong>Example: 7</strong></p>
+    <p>Factors of 7 = 1, 7.</p>
+    <p>It has exactly 2 factors, so 7 is a Prime Number.</p>
+
+    <hr>
+    <h3>🇮🇳 हिंदी में: अभाज्य संख्या क्या है?</h3>
+    <p>
+        अभाज्य संख्या वह प्राकृतिक संख्या है जो 1 से बड़ी होती है
+        और जिसके केवल दो गुणनखंड होते हैं: 1 और वह संख्या स्वयं।
+    </p>
+    <p><strong>उदाहरण:</strong> 2, 3, 5, 7, 11, 13, 17, 19</p>
+    <p><strong>उदाहरण: 7</strong></p>
+    <p>7 के गुणनखंड = 1, 7</p>
+    <p>इसके केवल 2 गुणनखंड हैं, इसलिए 7 एक अभाज्य संख्या है।</p>
+</div>
+
+<div class="theory-card nonprime-info">
+    <h3>🔴 2. What is a Non-Prime Number?</h3>
+    <p>
+        A composite number is a natural number greater than 1
+        that has more than two factors.
+    </p>
+    <p><strong>Examples:</strong> 4, 6, 8, 9, 10, 12, 15</p>
+    <p><strong>Example: 6</strong></p>
+    <p>Factors of 6 = 1, 2, 3, 6.</p>
+    <p>It has 4 factors, so 6 is a Composite Number.</p>
+
+    <hr>
+    <h3>🇮🇳 हिंदी में: भाज्य संख्या क्या है?</h3>
+    <p>
+        भाज्य संख्या वह प्राकृतिक संख्या है जो 1 से बड़ी होती है
+        और जिसके दो से अधिक गुणनखंड होते हैं।
+    </p>
+    <p><strong>उदाहरण:</strong> 4, 6, 8, 9, 10, 12, 15</p>
+    <p><strong>उदाहरण: 6</strong></p>
+    <p>6 के गुणनखंड = 1, 2, 3, 6</p>
+    <p>इसके 4 गुणनखंड हैं, इसलिए 6 एक भाज्य संख्या है।</p>
+</div>
+
+<div class="theory-card">
+    <h3>⚠️ 3. Is 1 a Prime Number?</h3>
+    <p>
+        No. The number 1 has only one factor, itself.
+        Therefore, 1 is neither prime nor composite.
+    </p>
+
+    <hr>
+    <h3>🇮🇳 हिंदी में: क्या 1 अभाज्य संख्या है?</h3>
+    <p>
+        नहीं। संख्या 1 का केवल एक गुणनखंड है, वह स्वयं 1 है।
+        इसलिए 1 न तो अभाज्य संख्या है और न ही भाज्य संख्या।
+    </p>
+</div>
+
+<div class="theory-card">
+    <h3>💡 4. How to Identify a Prime Number?</h3>
+    <ol>
+        <li>Check whether the number is greater than 1.</li>
+        <li>Test divisors from 2 up to the square root of the number.</li>
+        <li>If any division has remainder 0, it is not prime.</li>
+        <li>If no divisor is found, it is prime.</li>
+    </ol>
+    <p>
+        <strong>Example:</strong> 7 is not divisible exactly by 2.
+        No divisor from 2 to √7 exists, so 7 is prime.
+    </p>
+
+    <hr>
+    <h3>🇮🇳 हिंदी में: अभाज्य संख्या की पहचान कैसे करें?</h3>
+    <ol>
+        <li>जाँचें कि संख्या 1 से बड़ी है या नहीं।</li>
+        <li>संख्या के वर्गमूल तक 2 से शुरू करके भाग देकर जाँचें।</li>
+        <li>यदि किसी संख्या से पूरा भाग लग जाता है, तो वह अभाज्य नहीं है।</li>
+        <li>यदि कोई भाजक नहीं मिलता, तो वह अभाज्य संख्या है।</li>
+    </ol>
+    <p>
+        <strong>उदाहरण:</strong> 7 में 2 से पूरा भाग नहीं लगता।
+        √7 तक कोई पूर्ण भाजक नहीं मिलता, इसलिए 7 अभाज्य संख्या है।
+    </p>
+</div>
+
+<div class="theory-card">
+    <h3>🧠 5. Important Facts</h3>
+    <ul>
+        <li>2 is the smallest prime number.</li>
+        <li>2 is the only even prime number.</li>
+        <li>All prime numbers greater than 2 are odd.</li>
+        <li>A composite number greater than 1 has more than two factors.</li>
+        <li>0 and 1 are neither prime nor composite.</li>
+    </ul>
+
+    <hr>
+    <h3>🇮🇳 हिंदी में: महत्वपूर्ण तथ्य</h3>
+    <ul>
+        <li>2 सबसे छोटी अभाज्य संख्या है।</li>
+        <li>2 एकमात्र सम अभाज्य संख्या है।</li>
+        <li>2 से बड़ी सभी अभाज्य संख्याएँ विषम होती हैं।</li>
+        <li>1 से बड़ी भाज्य संख्या के दो से अधिक गुणनखंड होते हैं।</li>
+        <li>0 और 1 न तो अभाज्य हैं और न ही भाज्य।</li>
+    </ul>
+</div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>Created with ❤️ by <strong>Satyanshu Saxena</strong></p>
+    <p>💻 Code Today, Better Tomorrow 🚀</p>
+    <p>Learn • Practice • Improve</p>
+    <p>© 2026 All Rights Reserved</p>
+</footer>
+
+<script>
+const form = document.getElementById("primeForm");
+const input = document.getElementById("num");
+const result = document.getElementById("result");
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const n = Number(input.value);
+
+    result.className = "";
+    result.style.display = "block";
+
+    if (
+        input.value.trim() === "" ||
+        !Number.isSafeInteger(n) ||
+        n < 2
+    ) {
+        result.classList.add("error");
+        result.textContent = "❌ Enter an integer greater than 1";
+        return;
+    }
+
+    let isPrime = true;
+
+    for (let i = 2; i <= n / i; i++) {
+        if (n % i === 0) {
+            isPrime = false;
+            break;
+        }
+    }
+
+    if (isPrime) {
+        result.classList.add("prime");
+        result.textContent = `🎉 ${n} is a Prime Number! 🌈 ⭐`;
+    } else {
+        result.classList.add("not-prime");
+        result.textContent = `❌ ${n} is Not a Prime Number`;
+    }
+});
+</script>
+
+</body>
+</html>
